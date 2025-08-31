@@ -1,7 +1,5 @@
 # Manual Localization Instructions
 
-> This is work-in-progress.
-
 Table of Contents:
 
 * [Overview](#overview)
@@ -32,21 +30,22 @@ To volunteer, join [Loop zulipchat](https://loop.zulipchat.com/) and send a dire
 
 The first set of scripts were created in 2023 to automate the localization process. (Refer to these as the original scripts.)
 
-* import_localizations.sh
-* update_submodule_refs.sh
-* export_localizations.sh
+* Scripts/import_localizations.sh
+* Scripts/export_localizations.sh
 
-New scripts were created in 2025 to provide smaller steps and to allow review before the modifications are committed and PR are opened. 
-These new scripts have "manual" in the name.
+New scripts were created in 2025 to provide smaller steps and to allow review before the modifications are committed and PR are opened.
 
-* The "import" in script names refers to importing xliff files from lokalise to provide updated localization for LoopWorkspace and associated submodules
-    * These scripts are used when bringing in new translations from the lokalise site
-* The "export" in script names  refers to exporting localization from LoopWorkspace and associated submodules into xliff files and uploading them to the localise site
-    * These scripts are used when there has been modification to the strings in any of the workspace submodules
-    * This is not needed as frequently as the "import" steps
-* The Scripts/define_common.sh is used by other scripts to provide a single source for the list of:
+These new scripts have "manual" in the script name.
+
+* The "import" in the original script name refered to importing xliff files from lokalise to provide updated localization for LoopWorkspace and associated submodules
+    * This script was used to bring in new translations into the LoopWorkspace submodules
+* The "export" in the original script name refered to exporting localization from LoopWorkspace and associated submodules into xliff files and uploading them to the localise site
+    * This script was used to upload modifications to the strings in any of the workspace submodules
+
+In addition to breaking the original import and export scripts into components:
+* Scripts/define_common.sh is used by other scripts to provide a single source for the list of:
     * filename with message indicating download time from lokalise for commit messages and PR titles
-    * paths used by some of the scripts for output and input
+    *  used by some of the scripts for output and input
     * LANGUAGES (list of all languages to be included)
     * projects (all the submodules for LoopWorkspace with owners and branches)
 

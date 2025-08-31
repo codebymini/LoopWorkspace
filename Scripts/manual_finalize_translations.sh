@@ -15,7 +15,7 @@ for project in ${projects}; do
     git add .
         # skip repositories with no changes
         if git commit -F "../${message_file}"; then
-            git push --set-upstream origin ${translation_dir}
+            git push --set-upstream origin ${translation_branch}
             pr=$(gh pr create -B $branch -R $user/$dir --fill 2>&1 | grep http)
             echo "PR = $pr"
             open $pr

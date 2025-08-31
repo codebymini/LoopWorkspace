@@ -3,8 +3,8 @@
 # define variables used by more than one script
 #   variables are:
 #      message_file
-#      archive_dir
-#      translation_dir
+#      archive_branch
+#      translation_branch
 #      projects
 #      LANGUAGES
 
@@ -15,9 +15,9 @@
 message_file="xlate_message_file.txt"
 
 # define the branch names used by the translation scripts
-archive_dir="archive_translations"
-translation_dir="translations"
-target_loopworkspace_dir="dev"
+archive_branch="archive_translations"
+translation_branch="translations"
+target_loopworkspace_branch="dev"
 
 # define the languages used by the translation scripts
 # matches lokalise order, en plus alphabetical order by language name in English

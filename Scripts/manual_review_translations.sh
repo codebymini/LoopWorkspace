@@ -17,11 +17,11 @@ echo "Hit return when ready"
 read query
 
 for project in ${projects}; do
-  echo "Review diffs for ${translation_dir} branch for $project"
+  echo "Review diffs for ${translation_branch} branch for $project"
   IFS=":" read user dir branch <<< "$project"
   echo "parts = $user $dir $branch"
   cd $dir
-  if git switch ${translation_dir}; then
+  if git switch ${translation_branch}; then
     git status
     folder_path="${PWD}"
     echo ""

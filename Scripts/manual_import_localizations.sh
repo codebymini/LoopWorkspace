@@ -21,8 +21,8 @@ for project in ${projects}; do
   cd $dir
   git checkout $branch
   git pull
-  git branch -D ${translation_dir} || true
-  git checkout -b ${translation_dir} || true
+  git branch -D ${translation_branch} || true
+  git checkout -b ${translation_branch} || true
   cd -
 done
 
