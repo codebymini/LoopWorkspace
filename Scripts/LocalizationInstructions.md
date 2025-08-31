@@ -5,7 +5,6 @@ Table of Contents:
 * [Overview](#overview)
     * [Overview: From lokalise to LoopWorkspace](#overview-from-lokalise-to-loopworkspace)
     * [Overview: From LoopWorkspace to lokalise](#overview-from-loopworkspace-to-lokalise)
-    * [Open questions and notes](#open-questions-and-notes)
 * [Loop Dashboard at lokalise](#loop-dashboard-at-lokalise)
 * Script Usage
 * Translations
@@ -20,6 +19,7 @@ Table of Contents:
     * [Prepare xliff_out folder](#prepare-xliff_out-folder)
     * [Update lokalise strings](#update-lokalise-strings)
 * [Utility Scripts](#utility-scripts)
+* [Questions and notes](#questions-and-notes)
 
 ## Overview
 
@@ -33,21 +33,16 @@ The first set of scripts were created in 2023 to automate the localization proce
 * Scripts/import_localizations.sh
 * Scripts/export_localizations.sh
 
+About the naming:
+
+* The "import" in the original script name refered to importing xliff files from lokalise to provide updated localization strings for LoopWorkspace and associated submodules
+    * This script was used to bring in new translations into the LoopWorkspace submodules and autocreate PR
+* The "export" in the original script name refered to exporting localization from LoopWorkspace and associated submodules into xliff files and uploading them to the lokalise site
+    * This script was used to upload the strings in any of the workspace submodules
+
 New scripts were created in 2025 to provide smaller steps and to allow review before the modifications are committed and PR are opened.
 
 These new scripts have "manual" in the script name.
-
-* The "import" in the original script name refered to importing xliff files from lokalise to provide updated localization for LoopWorkspace and associated submodules
-    * This script was used to bring in new translations into the LoopWorkspace submodules
-* The "export" in the original script name refered to exporting localization from LoopWorkspace and associated submodules into xliff files and uploading them to the localise site
-    * This script was used to upload modifications to the strings in any of the workspace submodules
-
-In addition to breaking the original import and export scripts into components:
-* Scripts/define_common.sh is used by other scripts to provide a single source for the list of:
-    * filename with message indicating download time from lokalise for commit messages and PR titles
-    *  used by some of the scripts for output and input
-    * LANGUAGES (list of all languages to be included)
-    * projects (all the submodules for LoopWorkspace with owners and branches)
 
 ### Overview: From lokalise to LoopWorkspace
 
@@ -67,104 +62,7 @@ For details, see [From LoopWorkspace to lokalise](#from-loopworkspace-to-lokalis
 This script prepares xliff files for each language (for all repositories) from LoopWorkspace suitable to be uploaded to lokalise:
 
 * manual_export_localizations.sh
-* manual_upload_to_lokalise.sh (wip not tested yet)
-
-### Open questions and notes
-
-> Notes from Marion Barker:
-
-#### Question 1:
-
-I do not believe these keys should be included in the translation process:
-
-* CFBundleGetInfoString
-* CFBundleNames
-* NSHumanReadableCopyright
-
-These were almost all empty. I deleted these keys on 2025-07-27 on the lokalise site.
-
-At the current time, these keys will be deleted manually after dragging xliff files to the localise site. Eventually, it would be nice to automate this, but one step at a time.
-
-#### Question 2:
-
-A lot of the changes that were proposed were white space changes. If we need to make these whitespace changes, then we can do so. But if there's a method I missed to avoid them, I'd prefer to take that.
-
-I discussed this with Pete and we agreed to do the one time change to all the repositories for the keys.
-
-Here's an example of a whitespace change:
-
-```
-diff --git a/RileyLinkKitUI/nb.lproj/Localizable.strings b/RileyLinkKitUI/nb.lproj/Localizable.strings
-index fbfc31e..db53cbd 100644
---- a/RileyLinkKitUI/nb.lproj/Localizable.strings
-+++ b/RileyLinkKitUI/nb.lproj/Localizable.strings
-@@ -74,7 +74,7 @@
- "Name" = "Navn";
- 
- /* Detail text when battery alert disabled.
--   Text indicating LED Mode is off */
-+Text indicating LED Mode is off */
- "Off" = "Av";
- 
- /* Text indicating LED Mode is on */
-```
-
-#### Question 3:
-
-Both OmniBLE and OmniKit seem to be adding new xx.lproj folders at the top level with the languages already being present in other folders. These have associated changes to the `pbxproj` file. I'm confused by this and wonder if this is something that should be fixed.
-
-#### Status on 2025-08-10
-
-Updated the LocalizationInstructions.md file after running through the sequence documented in this file:
-
-1. Download from lokalise (manual_download_from_lokalise.sh)
-2. Import into LoopWorkspace (manual_import_localizations.sh)
-3. Review Differences (manual_review_translations.sh)
-4. Commit Submodule Changes and Create PRs (manual_finalize_translations.md)
-
-Only 4 PR were opened because of permission limits and desire to go over the method before finalizing. All 4 PR were converted to drafts.
-
-> These were created with the updated scripts and will be discussed before merging. They exhibit questions 1, 2 and 3.
-
-#### Status on 2025-08-24
-
-Additional changes were made to the scripts and this file was updated in the course of running the scripts.
-
-In several cases, the script would have modified a pbxproj file in the manner discussed in [Review Differences](#review-differences). These were avoided for these repositories:
-
-* LoopKit, OmniBLE, OmniKit
-* did a spot check and the majority of the strings in the newly added top level ll.lproj/Localizable.strings were already in a lower level folder, so removing those additions are probably OK
-* can always add them later if this was a mistake
-* would rather not add more confusion right now
-
-specific commands for those repositories
-```
-cd LoopKit
-git restore LoopKit.xcodeproj/project.pbxproj
-rm -rf LoopKit/it.lproj/
-rm -rf LoopKit/nb.lproj/
-cd ..
-
-cd OmniBLE
-# ignore the top level lproj folders already there:
-#   de, it, nb, nl, pl, ru
-git restore OmniBLE.xcodeproj/project.pbxproj
-rm -rf da.lproj/
-rm -rf fr.lproj/
-cd ..
-
-cd OmniKit
-git restore OmniKit.xcodeproj/project.pbxproj
-rm -rf da.lproj/
-rm -rf de.lproj/
-rm -rf fr.lproj/
-rm -rf it.lproj/
-rm -rf nb.lproj/
-rm -rf nl.lproj/
-rm -rf pl.lproj/
-rm -rf ru.lproj/
-cd ..
-```
+* manual_upload_to_lokalise.sh
  
 ## Loop Dashboard at lokalise
 
@@ -178,13 +76,17 @@ The translations are performed by volunteers. To volunteer, join [Loop zulipchat
 
 Some scripts require a LOKALISE_TOKEN. 
 
-When the user is a manager for the Loop project at lokalise, they create a LOKALISE_TOKEN (API token) with read/write privileges and use those scripts after generating their own token and exporting that token, e.g.,
+When the user is a manager for the Loop project at lokalise, they create a LOKALISE_TOKEN (API token) with read/write privileges.
+
+* API tokens can be created and recovered by going to : https://app.lokalise.com/profile/?refresh6656#apitokens
+
+Once the token is created, export the token, e.g.,
 
 ```
 export LOKALISE_TOKEN=<token>
 ```
 
-Be sure to save the token in a secure location.
+Make sure the scripts are executable. If not, apply `chmod +x` to the scripts.
 
 ## From lokalise to LoopWorkspace
 
@@ -201,7 +103,7 @@ This script:
 * generates a temporary `xlate_pr_title.txt` file used for the commit message and titles for PRs to the submodules and LoopWorkspace
 
 If you get a warning: `Warning: Project too big for sync export. Please use our async export endpoint instead`
-just try again later.
+just try again and it will work on another attempt.
 
 ### Import xliff files into LoopWorkspace
 
@@ -222,7 +124,7 @@ It then goes through each language and brings in updates from the xliff_in folde
 
 The result is that any updated localizations shows up as a diff in each submodule.
 
-> The default branch name used for all the submodules is `translations`. If you want to modify that, edit Scripts/define_common.sh and change `translation_dir` before executing the script. This change will then be reflected in 3 scripts: import, review and finalize. In general, it is best to stick with `translations` as the branch name.
+> The default branch name used for all the submodules is `translations`. If you want to modify that, edit Scripts/define_common.sh and change `translation_branch` before executing the script. This change will then be reflected in 3 scripts: import, review and finalize. In general, it is best to stick with `translations` as the branch name.
 
 Before running this script:
 
@@ -241,10 +143,10 @@ Execute this script:
 
 The `InfoPlist.strings` may already be included in some cases. Don't worry about those. But do not add new ones.
 
-* If there is a change to the *.xcodeproj/project.pbxproj - it may be duplicate strings
+* If there is a change to the *.xcodeproj/project.pbxproj - it is probably duplicates of strings in files already included in the pbxproj file
     * make sure that any new strings in the new files are handled in the existing Localizable.strings files for each language that has a new lproj folder added at the top level
     * git restore the pbxproj file
-    * rm the new files that contain those strings
+    * rm the new folders that contain those strings
     * verify that LoopWorkspace still builds correctly
 * Note - when there already duplicates of the same string in more than one lproj folder
     * save doing clean up for later
@@ -259,10 +161,6 @@ Use the `manual_review_translations.sh` script in one terminal and open another 
 After each submodule, if any differences are detected, the script pauses with the summary of files changed and allows time to do detailed review (in another terminal). Hit return when ready to continue the script.
 
 Examine the diffs for each submodule to make sure they are appropriate.
-
-> In earlier tests, there are some changes that are primarily white space, so I did not commit those. See question 2 in [Open questions and notes](#open-questions-and-notes).
-
-> Go ahead and prepare the white space diffs as PR for final review.
 
 ### Commit Submodule Changes and Create PRs
 
@@ -303,39 +201,27 @@ At this point, get someone to approve each of the open PR and merge them. Be sur
 
 ## Finalize with PR to LoopWorkspace
 
-An interim script was added. It creates a new branch: dev_translations_test and commits the changes for any submodule that has a translations branch. It also allows updates to scripts and instructions to be committed as well. See:
+Once all the translations branches for submodules are merged, run the script to prepare the PR to update LoopWorkspace.
 
-* manual_test_LoopWorkspace_translations.sh
+> Normally, this script is run starting with dev branch
 
-Once all the localization PR have been finished and merged, LoopWorkspace needs to be updated as well. Below are some of the CLI steps that could be used. Probably want to create another manual script for doing the final PR leading to the next update to dev branch.
+> For the case with script modifications, use a working branch from dev with the Scripts folder properly updated
 
-Prepare the local clone for updates and create a new branch:
+**Bullet summary** `manual_LoopWorkspace_prepare_pr.sh` script:
 
-```
-git switch dev
-git pull --recurse
-git switch -c translations
-```
+* create translations branch (or use it if it already exists)
+* execute update_submodule_refs.sh to bring in the tip of every submodule
+* there should be changes for any updated submodules, if so
+    * git commit -a using the automated commit message
+    * push the `translations` branch to origin
+    * create a PR from `translations` branch to dev branch for LoopWorkspace
+    * open the URL for the PR
 
-Update all submodules to the latest tip of their branches - this brings in all the new translations:
-
-```
-./Scripts/update_submodule_refs.sh
-```
-
-Use the `xlate_pr_title.txt` file created when downloading from lokalise:
-```
-git commit -F xlate_pr_title.txt
-git push --set-upstream origin translations
-```
-
-Create the PR from this branch.
+Make sure the new translations branch builds. Update the version number and add that commit to the PR.
 
 ```
-gh pr create -B dev  -R LoopKit/translations --title xlate_pr_title.txt
+./Scripts/manual_LoopWorkspace_prepare_pr.sh
 ```
-
-All the actions above can be done with a script once one is prepared.
 
 ## From LoopWorkspace to lokalise
 
@@ -347,8 +233,6 @@ It is normally required for any code updates that add or modify the strings that
 
 First navigate to the LoopWorkspace directory in the appropriate branch, normally this is the `dev` branch. Make sure it is fully up to date with GitHub.
 
-Make sure the scripts are executable. You may need to apply `chmod +x` to the scripts.
-
 Make sure the Xcode workspace is **not** open on your Mac or this will fail.
 
 ```
@@ -359,36 +243,26 @@ This creates an xliff_out folder filled with xliff files, one for each language,
 
 ### Update lokalise strings
 
-This section requires the user have `manager` access to the Loop project.
+This script requires Read/Write token for lokalise. It uploads the xliff file for each language in the Xliff_out folder.
 
-The instructions here are for a manual drag and drop. At a later time, the manual_upload_to_localise.sh script will be tested and should replace this section.
-
-Log into the [lokalise portal](https://app.lokalise.com/projects) and navigate to Loop.
-
-Select [Upload](https://app.lokalise.com/upload/414338966417c70d7055e2.75119857/)
-
-Drag the *.xliff files from the xliff_out folder (created by export_localizations.sh) into the drag and drop location.
-
-Be patient
-
-* while each language is uploaded, the `uploading` indicator shows up under each language on the left side
-* at the bottom of the list, the `Import Files` should be available when all have completed uploading
-    * Tap on `Import Files`
-* progress will show at upper right
-
-When this is done, check the Loop lokalise dashboard again to see updated statistics.
-
-Go through an delete all the keys from InfoPlist.strings. We do not yet know how to prevent these from being added as items to translate.
-
-Next time through, hide the keys instead of deleting them, maybe that will "stick" and we won't have to do it again
-
-These keys should not be included in the translation process - make sure they are hidden (or possibly deleted):
-
-* CFBundleGetInfoString
-* CFBundleNames
-* NSHumanReadableCopyright
+```
+./Scripts/manual_upload_to_lokalise.sh
+```
 
 ## Utility Scripts
+
+Once the import and export process is completed, you can delete temporary files and folders using:
+
+```
+./Scripts/manual_cleanup.sh
+```
+
+The define_common.sh is used by other scripts to provide a single source for the list of:
+
+* filename with message indicating download time from lokalise for commit messages and PR titles
+* branch names used by some of the scripts for output and input
+* LANGUAGES (list of all languages to be included)
+* projects (all the submodules for LoopWorkspace with owners and branches)
 
 If you need to start over but don't want to lose prior work, use archive_translations.sh. This is suitable for use after manual_import_localizations and manual_review_translations and before manual_finalize_translations.
 
@@ -396,6 +270,80 @@ If you want to change paths for translations and archived translations, edit Scr
 
 * archive_translations.sh
     * internal names that can be edited in define_common.sh:
-        * archive_dir="test_translations"
-        * translation_dir="translations"
+        * archive_branch="test_translations"
+        * translation_branch="translations"
+
+## Questions and notes
+
+Most of the questions were worked through while developing the new scripts.
+
+#### Keys uploaded that not require translation
+
+**Answer** Mark them as not visible to translators.
+
+**Details**
+
+The current method uploads some keys that do not need to be translated. Initially, a few keys were deleted from lokalise, but on the next upload, they were restored. So the next modification was to mark the keys as not visible to the translators.
+
+Items already translated are brought down one time - go on and include those diffs and then next cycle, these should no longer be a problem.
+
+Keys that were deleted on 2025-07-27, then later are restored as empty:
+
+* CFBundleGetInfoString
+* CFBundleNames
+* NSHumanReadableCopyright
+
+After the initial testing, some additional keys were marked as not visible. These were mostly identified when one or two translators were very thorough.
+
+#### White space changes
+
+**Answer** Accept these as a one-time change.
+
+**Details**
+
+A lot of the keys have different white space than the 2023 downloads. 
+I discussed this with Pete and we agreed to do the one time change to all the repositories for the keys.
+
+#### Downloaded Translations duplicated in Xcode
+
+**Answer** Manual cleanup when doing the review until this duplication is figured out.
+
+**Details**
+
+LoopKit, OmniBLE and OmniKit seem to be adding new ll.lproj folders at the top level with the languages already being present in other folders. These have associated changes to the `pbxproj` file.
+
+I spot checked and found the new Localize.strings in the new ll.lproj folders have the same translations in the other locations where those translations are placed by Xcode.
+
+Essentially, when doing the review:
+
+```
+git restore ***.xcodeproj/project.pbxproj 
+rm -rf ll.lproj
+
+where *** is replaced by the submodule name
+and ll is replaced by the language code
+```
+
+For the DanaKit module, rely on the repository owner to maintain the translations with crowdin (for now). Do not add extra files to the repository as was already done for OmniBLE and OmniKit. 
+
+#### Status on 2025-08-10
+
+Updated the LocalizationInstructions.md file after running through the sequence documented in this file:
+
+1. Download from lokalise (manual_download_from_lokalise.sh)
+2. Import into LoopWorkspace (manual_import_localizations.sh)
+3. Review Differences (manual_review_translations.sh)
+4. Commit Submodule Changes and Create PRs (manual_finalize_translations.md)
+
+Only 4 PR were opened for this test, which were subsequently closed without merging. They helped with the testing process.
+
+#### Status on 2025-08-24
+
+Additional changes were made to the scripts and translations were merged into PR for 15 repositories from the download on 2025-08-24.
+
+#### Status on 2025-08-30
+
+Another cycle was completed, that included an upload to lokalise from the in-progress translations changes. Then a new download was processed.
+
+The final step to test is the creation of the PR for LoopWorkspace dev branch. To do this, the final script will be tested.
 
