@@ -64,16 +64,20 @@ if [[ ${query} == "y" ]]; then
         echo "PR = $pr"
         open $pr
 
+        section_divider
         echo "After you review, ${pr}, get approvals and merge the PR"
         echo " be sure to trim the '${translation_dir}' branch,"
         echo " and then run the export and upload scripts again from the updated '${target_loopworkspace_dir}' branch"
         section_divider
 
     else
+        section_divider
         echo "No changes were found, no PR created"
+        section_divider
     fi
 
 else
+    section_divider
     echo "user opted to exit the script"
     section_divider
 fi
