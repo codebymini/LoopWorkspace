@@ -17,7 +17,7 @@ message_file="xlate_message_file.txt"
 # define the branch names used by the translation scripts
 archive_dir="archive_translations"
 translation_dir="translations"
-test_lw_dir="dev_translations_test"
+target_loopworkspace_dir="dev"
 
 # define the languages used by the translation scripts
 # matches lokalise order, en plus alphabetical order by language name in English
@@ -67,3 +67,9 @@ projects=( \
     LoopKit:RileyLinkKit:dev \
     LoopKit:TidepoolService:dev \
 )
+
+function section_divider() {
+    echo -e ""
+    echo -e "--------------------------------"
+    echo -e ""
+}
