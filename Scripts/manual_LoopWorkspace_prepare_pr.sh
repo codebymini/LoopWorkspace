@@ -41,15 +41,15 @@ if [[ ${query} == "y" ]]; then
     if [[ "${current_branch}" == "${translation_dir}" ]]; then
             echo "already on $translation_dir, ok to continue"
     
-    elif git rev-parse --verify --quiet "${translation_dir}"; then
+    elif [ -n "$(git branch --list "$translation_dir")" ]; then
         echo "Local branch '$translation_dir' exists."
-            echo "You are on $current_branch and $translation_dir already exists"
+            echo "You are on '$current_branch' and '$translation_dir' already exists"
             echo "quitting"
             exit 1 # exit with failure
     
     else
         echo "Local branch $translation_dir does not exist,"
-        echo "creating it from the current branch, $current_branch."
+        echo "creating $translation_dir from the current branch, $current_branch."
         git switch -c "${translation_dir}"
     fi
 
@@ -60,8 +60,8 @@ if [[ ${query} == "y" ]]; then
     section_divider
     echo ""
     echo "After you review, get approvals and merge the PR"
-    echo " be sure to trim the ${translation_dir} branch,"
-    echo " and then run the export and upload scripts again from the updated dev branch"
+    echo " be sure to trim the '${translation_dir}' branch,"
+    echo " and then run the export and upload scripts again from the updated '${target_loopworkspace_dir}' branch"
     section_divider
 
 else
