@@ -59,13 +59,10 @@ if [[ ${query} == "y" ]]; then
 
     # only create a PR if there are changes
     if git commit -a -F "${message_file}"; then
-        echo "this would create a PR - but comment it out for now"
-        pr="not-a-real-pr-commented-out"
-        
-        #git push --set-upstream origin ${translation_dir}
-        #pr=$(gh pr create -B ${target_loopworkspace_dir} --fill 2>&1 | grep http)
-        #echo "PR = $pr"
-        #open $pr
+        git push --set-upstream origin ${translation_dir}
+        pr=$(gh pr create -B ${target_loopworkspace_dir} --fill 2>&1 | grep http)
+        echo "PR = $pr"
+        open $pr
 
         echo "After you review, ${pr}, get approvals and merge the PR"
         echo " be sure to trim the '${translation_dir}' branch,"
