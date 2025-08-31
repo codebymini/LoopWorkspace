@@ -16,10 +16,8 @@ section_divider
 echo "You must be in the LoopWorkspace folder ready to bring in "
 echo "  all the latest versions of the submodules which were "
 echo "  just translated"
-
 echo ""
 echo "This script will prepare a PR to LoopWorkspace '${target_loopworkspace_dir}' branch"
-
 echo ""
 echo "1. If the branch name is not already '${translation_dir}', then"
 echo "   that branch will be created and used for this PR"
@@ -58,8 +56,20 @@ if [[ ${query} == "y" ]]; then
     ./Scripts/update_submodule_refs.sh
 
     section_divider
-    echo ""
-    echo "After you review, get approvals and merge the PR"
+
+    # only create a PR if there are changes
+    if git commit -F "../${message_file}"; then
+        echo "this would create a PR - but comment it out for now"
+        pr="not-a-real-pr-commented-out"
+        #git push --set-upstream origin ${translation_dir}
+        #pr=$(gh pr create -B $target_loopworkspace_dir --fill 2>&1 | grep http)
+        #echo "PR = $pr"
+        #open $pr
+    else
+        echo "No changes were found, no PR created"
+    fi
+
+    echo "After you review, ${pr}, get approvals and merge the PR"
     echo " be sure to trim the '${translation_dir}' branch,"
     echo " and then run the export and upload scripts again from the updated '${target_loopworkspace_dir}' branch"
     section_divider
