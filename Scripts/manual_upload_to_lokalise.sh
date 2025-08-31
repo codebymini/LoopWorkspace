@@ -2,7 +2,7 @@
 
 # This script will upload the xliff files from LoopWorkspace and submodules to lokalise
 
-# Install the Lokalise command line tools from https://github.com/lokalise/lokalise-cli-2-go
+# Install the lokalise command line tools from https://github.com/lokalise/lokalise-cli-2-go
 # Generate an API Token (not an SDK Token!) following the instructions here: https://docs.lokalise.com/en/articles/1929556-api-tokens
 # export LOKALISE_TOKEN="<yourtokenhere>"
 

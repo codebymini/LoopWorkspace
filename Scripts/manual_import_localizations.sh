@@ -3,7 +3,7 @@
 # This script imports localizations from xliff files into the users local clone of LoopWorkspace
 # You must be in the LoopWorkspace folder
 
-# Fetch translations from Lokalise before running this script
+# Fetch translations from lokalise before running this script
 # ./Scripts/manual_download_from_lokalise.sh
 
 # Then execute script:
