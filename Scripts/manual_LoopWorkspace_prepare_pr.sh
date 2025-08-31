@@ -58,7 +58,7 @@ if [[ ${query} == "y" ]]; then
     section_divider
 
     # only create a PR if there are changes
-    if git commit -F "../${message_file}"; then
+    if git commit -F "${message_file}"; then
         echo "this would create a PR - but comment it out for now"
         pr="not-a-real-pr-commented-out"
         #git push --set-upstream origin ${translation_dir}
