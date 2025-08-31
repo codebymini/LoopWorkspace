@@ -3,52 +3,35 @@
 set -e
 set -u
 
-# this script prepares a branch of LoopWorkspace based on dev plus the translation branches just created
-# users can build this branch to get the most recent localizations before this is merged to the dev branch
+# this script prepares a branch of LoopWorkspace based on current local branch.
+# It brings in the tip of all the submodule branches which should have just
+# been updated with the manual download, import, review and finalize scripts.
+# After all those PR are merged and the translation branches trimmed,
+# the next step is to prepare the PR to update LoopWorkspace dev branch
 
 source Scripts/define_common.sh
-submodule_list=" "
 
-echo "You must be in the LoopWorkspace folder and the translations folders must exist for submodules with updates"
+echo "You must be in the LoopWorkspace folder ready to bring in "
+echo "  all the latest versions of the submodules which were "
+echo "  just translated"
 
-if git switch "${test_lw_dir}"; then
-    echo "The branch ${test_lw_dir} exists"
+echo ""
+echo "1. ./Scripts/update_submodule_refs.sh will be executed"
+echo "2. If the branch name is not already '${translation_dir}', then"
+echo "   that branch will be created and used for this PR"
+echo "3. The commit message in ${message_file} will be used"
+cat ${message_file}
+echo "4. Once the PR is prepared, additional commits can be added as needed"
+
+echo ""
+echo "After completing this process, merging the PR and trimming the ${translation_dir} branch,"
+echo "  be sure to run the export and upload scripts again from the updated dev branch"
+
+if git switch "${translation_dir}"; then
+    echo "The branch ${translation_dir} exists"
 else
-    echo "The branch ${test_lw_dir} does not exist; it will be created from dev"
-    git switch dev
-    git pull
-    git switch -c "${test_lw_dir}"
+    echo "The branch ${translation_dir} does not exist; it will be created from the current path"
+    git switch -c "${translation_dir}"
 fi
 
-echo "The ${translation_dir} branch will be commited for each submodule with changes"
-echo "Enter y to continue, any other key to exit"
-read query
-if [[ ${query} == "y" ]]; then
-
-    for project in ${projects}; do
-        echo "checking submodule $project"
-        IFS=":" read user dir branch <<< "$project"
-        echo "parts = $user $dir $branch"
-        cd $dir
-        if git switch "${translation_dir}"; then
-            submodule_list+=" ${dir}"
-        fi
-        cd -
-        git add ${dir}
-    done
-
-    echo "The submodules to update are ${submodule_list}"
-    # Get the length of the string
-    string_length=${#submodule_list}
-    MIN_LENGTH=4
-
-    if [[ ${string_length} -gt $MIN_LENGTH ]]; then
-        git commit -m "update submodules: use translation branch before merge"
-        git push --set-upstream origin ${test_lw_dir} 
-        echo "The branch ${test_lw_dir} has been pushed to LoopKit / LoopWorkspace"
-    else
-        echo "No submodules have branches named ${translation_dir}"
-        echo "quitting with no changes"
-    fi
-
-fi
+./Scripts/update_submodule_refs.sh
