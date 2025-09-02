@@ -14,6 +14,7 @@ public struct G7CGMManagerState: RawRepresentable, Equatable {
     public typealias RawValue = CGMManager.RawStateValue
 
     public var sensorID: String?
+    public var sensorType: G7SensorType = .unknown
     public var activatedAt: Date?
     public var latestReading: G7GlucoseMessage?
     public var latestReadingTimestamp: Date?
@@ -25,6 +26,15 @@ public struct G7CGMManagerState: RawRepresentable, Equatable {
 
     public init(rawValue: RawValue) {
         self.sensorID = rawValue["sensorID"] as? String
+        if let sensorTypeString = rawValue["sensorType"] as? String,
+           let sensorType = G7SensorType(rawValue: sensorTypeString) {
+            self.sensorType = sensorType
+        } else {
+            // Auto-detect sensor type from sensorID if not stored
+            if let sensorID = rawValue["sensorID"] as? String {
+                self.sensorType = G7SensorType.detect(from: sensorID)
+            }
+        }
         self.activatedAt = rawValue["activatedAt"] as? Date
         if let readingData = rawValue["latestReading"] as? Data {
             latestReading = G7GlucoseMessage(data: readingData)
@@ -37,6 +47,7 @@ public struct G7CGMManagerState: RawRepresentable, Equatable {
     public var rawValue: RawValue {
         var rawValue: RawValue = [:]
         rawValue["sensorID"] = sensorID
+        rawValue["sensorType"] = sensorType.rawValue
         rawValue["activatedAt"] = activatedAt
         rawValue["latestReading"] = latestReading?.data
         rawValue["latestReadingTimestamp"] = latestReadingTimestamp
